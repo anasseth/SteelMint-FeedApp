@@ -1,0 +1,123 @@
+.message-status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    position: absolute;
+    bottom: -31px;
+}
+
+.published {
+    color: black;
+    background-color: #b8e823;
+}
+
+.accepted {
+    color: black;
+    background-color: #9ddcec;
+}
+
+.submitted {
+    color: black;
+    background-color: #fff406;
+}
+
+.verified {
+    color: white;
+    background-color: #ca3eb6;
+}
+
+.rejected {
+    color: white;
+    background-color: #ef2229;
+}
+
+.high {
+    // background-color: #13c2bb;
+    background-color: #c33d01;
+    color: white;
+    font-weight: 500;
+}
+
+.medium {
+    // background-color: #5bebef;
+    background-color: #74563e;
+    color: white;
+    font-weight: 500;
+}
+
+.low {
+    // background-color: #c9ecef;
+    background-color: #fbd158;
+    color: black;
+    font-weight: 500;
+}
+
+.date-posted {
+    position: absolute;
+    bottom: -33px;
+    right: 0px;
+}
+
+.bigmint-logo {
+    padding: 3px;
+    background-color: white;
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+}
+
+.icon-toolbar {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+
+    ng-icon {
+        margin-left: 5px;
+        cursor: pointer;
+    }
+}
+
+.slide-in-bottom {
+    -webkit-animation: slide-in-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+    animation: slide-in-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+
+@-webkit-keyframes slide-in-bottom {
+    0% {
+        -webkit-transform: translateY(1000px);
+        transform: translateY(1000px);
+        opacity: 0;
+    }
+
+    100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-in-bottom {
+    0% {
+        -webkit-transform: translateY(1000px);
+        transform: translateY(1000px);
+        opacity: 0;
+    }
+
+    100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.hide {
+    visibility: hidden;
+    width: 0px;
+    height: 0px;
+    padding: 0px !important;
+}

@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "steel-mint-feed-management"
+  },
+  "targets": {
+    "steel-mint-feed-management": {
+      "hosting": {
+        "steelmint-announcement-app": [
+          "steel-mint-feed-management"
+        ]
+      }
+    }
+  }
+}

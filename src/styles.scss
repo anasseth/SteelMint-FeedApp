@@ -1,0 +1,345 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$steelmint-announcement-app-primary: mat.define-palette(mat.$indigo-palette);
+$steelmint-announcement-app-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$steelmint-announcement-app-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$steelmint-announcement-app-theme: mat.define-light-theme((color: (primary: $steelmint-announcement-app-primary,
+        accent: $steelmint-announcement-app-accent,
+        warn: $steelmint-announcement-app-warn,
+      )));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($steelmint-announcement-app-theme);
+
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap");
+// @import '~ngx-sharebuttons/themes/default';
+
+$dark-mode-chat-bg: #3F3F41;
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: open sans;
+  transition: ease 0.5s;
+  text-decoration: none;
+  list-style-type: none;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+body {
+  background: #484849;
+  color: white;
+  overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 450px;
+  // background: #282639;
+  background-color: $dark-mode-chat-bg;
+  margin: 0 auto;
+  margin-top: 50px;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: #292739 0 10px 20px;
+}
+
+.header {
+  // background: #ff6969;
+  background-color: #f0a81c;
+  display: flex;
+  padding: 15px;
+  border-radius: 10px 10px 0 0;
+}
+
+.grp-img {
+  position: relative;
+  width: 125px;
+  height: 45px;
+}
+
+.grp-img img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: solid 2px white;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.grp-img .i1 {
+  z-index: 1;
+}
+
+.grp-img .i2 {
+  left: 40px;
+}
+
+.grp-img .i3 {
+  left: 80px;
+}
+
+.grp-info {
+  padding: 0 15px;
+}
+
+.grp-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.grp-status {
+  letter-spacing: 1px;
+}
+
+.chatbox {
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 91vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.chatbox::-webkit-scrollbar {
+  width: 1em;
+}
+
+.chatbox::-webkit-scrollbar-track {
+  // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.chatbox::-webkit-scrollbar-thumb {
+  background-color: #343435;
+  width: 1px;
+  // outline: 0.2em solid black;
+}
+
+.chatbox .chat {
+  display: flex;
+  position: relative;
+  gap: 15px;
+  margin-bottom: 35px;
+}
+
+.chatbox img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: solid 2px white;
+}
+
+.chatbox img.preview {
+  width: 70%;
+  border: none;
+  border-radius: 0px;
+  height: auto;
+  object-fit: cover;
+  margin: auto;
+  margin-top: 15px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.chatbox .msg {
+  // background: #3a384c;
+  background-color: #272625;
+  max-width: 80%;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  font-size: 13px;
+
+  p {
+    font-weight: 500;
+  }
+
+  button {
+    outline: none;
+    border: none;
+    background-color: white;
+    color: rgb(85, 85, 85);
+    border-radius: 15px;
+    padding: 10px 50px;
+    font-weight: 600;
+    margin-right: auto;
+    margin-top: 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    cursor: pointer;
+  }
+}
+
+.msg ion-icon {
+  font-size: 20px;
+  color: #3a384c;
+  position: absolute;
+  top: 10px;
+}
+
+// .chatbox .chat:nth-child(even) {
+//   flex-direction: row-reverse;
+// }
+
+// .chatbox .chat:nth-child(odd) ion-icon {
+//   left: -14px;
+// }
+
+// .chatbox .chat:nth-child(even) ion-icon {
+//   right: -14px;
+//   transform: rotate(180deg);
+// }
+
+.policy {
+  // background: #3a384c;
+  background: #272625;
+  padding: 25px;
+  border-radius: 0 0 10px 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.policy p {
+  font-size: 13px;
+}
+
+.policy p a {
+  font-size: 13px;
+  // color: #ff6969;
+  color: #f0a81c;
+  text-decoration: underline;
+}
+
+.agree {
+  display: inline-block;
+  // color: #ff6969;
+  color: #f0a81c;
+  // border: solid 2px #ff6969;
+  border: solid 2px #f0a81c;
+  border-radius: 50px;
+  padding: 10px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 20px;
+}
+
+.agree:hover {
+  color: white;
+  // background: #ff6969;
+  background-color: #f0a81c;
+}
+
+.close {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  // background: #ff6969;
+  background-color: #f0a81c;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: -80px;
+  right: 0;
+}
+
+.close:hover {
+  box-shadow: #292739 0 0 10px 10px;
+}
+
+.close:hover ion-icon {
+  transform: rotate(360deg);
+}
+
+.close ion-icon {
+  font-size: 40px;
+}
+
+@media only screen and (max-width: 900px) {
+  body {
+    // background-color: lightblue;
+  }
+
+  .container {
+    width: 100%;
+    margin-top: 0px;
+    max-width: 100% !important;
+    height: 100vh;
+    background: $dark-mode-chat-bg;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: #292739 0 10px 20px;
+  }
+
+  .header {
+    border-radius: 0px;
+  }
+
+  .policy {
+    background: #272625;
+    padding: 25px;
+    border-radius: 0;
+    position: absolute;
+    bottom: 0px;
+  }
+}
+
+// Utility Classes
+.text-center {
+  text-align: center;
+}
+
+.d-flex {
+  display: flex;
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+
+.hide {
+  visibility: hidden;
+  width: 0px;
+  height: 0px;
+  padding: 0px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
