@@ -20,7 +20,11 @@
 			</button>
 		</div>
 	</div>
-	<div class="chatbox" #chatbox>
+	<div class="chatbox" #chatbox (click)="isSharePanelEnabled = false">
+		<button class="load-more d-flex justify-content-center" (click)="loadPreviousPost()">
+			<mat-spinner *ngIf="isLoadingPreviousPost" diameter="22" style="margin-right: 10px;"></mat-spinner>
+			{{ isLoadingPreviousPost ? 'Loading...' : 'Load Previous Post' }}
+		</button>
 		<div class="chat" *ngFor="let msg of messages">
 			<div class="message-status" [ngClass]="{
 					'published':msg.status == FeedStatus.PUBLISHED,
@@ -43,7 +47,7 @@
 						#feedMenuTrigger="matMenuTrigger">
 					</button>
 					<ng-icon name="heroEllipsisVertical" size="20" color="grey"
-						(click)="feedMenuTrigger.openMenu(); selectChatMessage(msg)"></ng-icon>
+						(click)="$event.stopPropagation(); feedMenuTrigger.openMenu(); selectChatMessage(msg)"></ng-icon>
 				</div>
 				<p style="margin-top: 10px;" [innerHTML]="msg.messageContent"></p>
 				<div style="text-align: center;">
@@ -60,8 +64,7 @@
 				</div>
 			</div>
 			<div class="date-posted">Posted by <b>{{msg.postedBy}}</b> on
-				{{globalService.convertSecondsToTimestamp(msg.postedOn)
-				| date:'short'}}</div>
+				{{globalService.convertSecondsToTimestamp(msg.postedOn) | date:'short'}}</div>
 		</div>
 	</div>
 
@@ -75,9 +78,12 @@
 			I agree
 		</a> -->
 		<div>
-			<share-buttons [theme]="'circles-dark'"
-				[include]="['facebook','twitter','linkedin','reddit','messenger','whatsapp','copy']" [show]="7"
-				[showText]="true" [url]="shareableURL"></share-buttons>
+			<share-buttons *ngIf="this.shareableContentType != FeedType.TEXT" [theme]="'circles-dark'"
+				[include]="['twitter','linkedin','reddit','messenger','whatsapp','copy']" [show]="7" [showText]="true"
+				[url]="shareableURL"></share-buttons>
+			<share-buttons *ngIf="this.shareableContentType == FeedType.TEXT" [theme]="'circles-dark'"
+				[include]="['copy']" [show]="7" [showText]="true" [url]="shareableURL"
+				[description]="shareableURL"></share-buttons>
 		</div>
 	</div>
 </div>
@@ -113,10 +119,6 @@
 			<mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
 			<mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
 		</mat-form-field>
-	</button>
-	<button mat-menu-item>
-		<share-button [theme]="'circles-dark'" [button]="'facebook'" [url]="'https://twitter.com/'"
-			[autoSetMeta]="false"></share-button>
 	</button>
 </mat-menu>
 

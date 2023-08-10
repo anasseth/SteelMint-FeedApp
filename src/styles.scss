@@ -58,7 +58,7 @@ body {
   // background: #282639;
   background-color: $dark-mode-chat-bg;
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 30px;
   border-radius: 10px;
   position: relative;
   box-shadow: #292739 0 10px 20px;
@@ -116,11 +116,11 @@ body {
 }
 
 .chatbox {
-  padding: 40px 20px;
+  padding: 20px 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  height: 91vh;
+  height: 81vh;
   overflow-x: hidden;
   overflow-y: scroll;
 }
@@ -176,6 +176,41 @@ body {
 
   p {
     font-weight: 500;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-top: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    h3 {
+      font-size: 18px;
+    }
+
+    h4 {
+      font-size: 16px;
+    }
+
+    h5 {
+      font-size: 14px;
+    }
+
+    h6 {
+      font-size: 12px;
+    }
   }
 
   button {
@@ -307,6 +342,10 @@ body {
     position: absolute;
     bottom: 0px;
   }
+
+  .chatbox {
+    height: 91vh;
+  }
 }
 
 // Utility Classes
@@ -342,4 +381,8 @@ body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  stroke: #f0a81c !important;
 }

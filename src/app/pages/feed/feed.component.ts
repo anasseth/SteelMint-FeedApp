@@ -20,10 +20,12 @@ export class FeedComponent implements OnInit {
   firestore: Firestore = inject(Firestore);
   messages: any = [];
   shareableURL: string = '';
+  shareableContentType: FeedType.ARTICLE | FeedType.FILE | FeedType.IMAGE | FeedType.TEXT = FeedType.TEXT;
   selectedChatMessage!: Message;
   FeedStatus = FeedStatus;
   FeedPriority = FeedPriority;
   FeedType = FeedType;
+  isLoadingPreviousPost: boolean = false;
   isSharePanelEnabled: boolean = false;
   range = new FormGroup({
     start: new FormControl<Date | null>(null),
@@ -59,6 +61,13 @@ export class FeedComponent implements OnInit {
     )
   }
 
+  loadPreviousPost() {
+    this.isLoadingPreviousPost = true;
+    var previousDate: Date = this.range.controls.start.value!;
+    previousDate.setDate(this.range.controls.start.value!.getDate() - 1);
+    this.range.controls.start.setValue(previousDate);
+  }
+
   async loadData(endDate?: any) {
     const itemCollection = collection(this.firestore, 'Feeds-Data');
     const q = query(itemCollection, where("postedOn", "<=", endDate ? endDate : this.range.controls.end.value), where("postedOn", ">=", this.range.value.start), orderBy("postedOn"), limit(10));
@@ -71,6 +80,7 @@ export class FeedComponent implements OnInit {
         }
         this.messages.push(message)
       });
+      this.isLoadingPreviousPost = false;
       console.log("Messages : ", this.messages)
       this.scrollToElement();
     });
@@ -85,15 +95,19 @@ export class FeedComponent implements OnInit {
     this.selectedChatMessage = object;
     switch (object.type) {
       case FeedType.ARTICLE:
+        this.shareableContentType = FeedType.ARTICLE;
         this.shareableURL = object.articleUrl ? object.articleUrl : ''
         break;
       case FeedType.FILE:
+        this.shareableContentType = FeedType.FILE;
         this.shareableURL = object.fileUrl ? object.fileUrl : ''
         break;
       case FeedType.IMAGE:
+        this.shareableContentType = FeedType.IMAGE;
         this.shareableURL = object.imageUrl ? object.imageUrl : ''
         break;
       default:
+        this.shareableContentType = FeedType.TEXT;
         this.shareableURL = object.messageContent ? object.messageContent : ''
         break;
     }
@@ -113,22 +127,22 @@ export class FeedComponent implements OnInit {
     const dbRef = collection(db, "Feeds-Data");
     let data = {
       "isShareable": true,
-      "status": "Published",
-      "priority": "Low",
+      "status": "Verified",
+      "priority": "High",
       "feedType": "Primary",
       "backgroundColor": "#42f59b",
-      "postedBy": "Millsoft",
+      "postedBy": "Hamza",
       "postedOn": new Date(),
       "imageUrl": "",
-      "fileThumbnailImageUrl": "",
+      "fileThumbnailImageUrl": "https://www.perlego.com/books/RM_Books/kaplan_wcyricq/9781638356431.jpg",
       "messageContent":
-        "The lifecycle of crude oil encompasses a multifaceted process that spans extraction to consumption. Drilling rigs delve into the Earth's depths to extract the oil, which is then transported via pipelines, ships, and trucks to refineries. At these refineries, it undergoes intricate processes to yield refined products such as gasoline, diesel, and petrochemical feedstocks. As society seeks greener alternatives, the lifecycle of crude oil prompts us to evaluate energy transitions, waste management, and the quest for more sustainable solutions.",
+        "Flutter, a revolutionary new cross-platform software development kit created by Google, makes it easier than ever to write secure, high-performance native apps for iOS and Android. Flutter apps are blazingly fast because this open source solution compiles your Dart code to platform-specific programs with no JavaScript bridge! Flutter also supports hot reloading to update changes instantly. And thanks to its built-in widgets and rich motion APIs, Flutter's apps are not just highly responsive, they're stunning!Purchase of the print book includes a free eBook in PDF, Kindle, and ePub formats from Manning Publications.About the technologyWith Flutter, you can build mobile applications using a single, feature-rich SDK that includes everything from a rendering engine to a testing environment. Flutter compiles programs written in Google's intuitive Dart language to platform-specific code so your iOS and Android games, utilities, and shopping platforms all run like native Java or Swift apps.About the book Flutter in Action teaches you to build professional-quality mobile applications using the Flutter SDK and the Dart programming language. You'll begin with a quick tour of Dart essentials and then dive into engaging, well-described techniques for building beautiful user interfaces using Flutter's huge collection of built-in widgets. The combination of diagrams, code examples, and annotations makes learning a snap.",
       "articleUrl": "",
       "source": "Third Party",
       "isBookmarked": false,
-      "fileUrl": "",
+      "fileUrl": "https://edu.anarcho-copy.org/Programming%20Languages/Frontend/flutter/Flutter%20in%20Action.pdf",
       "category": "Commodity",
-      "type": "Text"
+      "type": "File"
     }
     addDoc(dbRef, data)
       .then(docRef => {

@@ -82,6 +82,19 @@
     }
 }
 
+.load-more {
+    width: 145px;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 20px;
+    background-color: gray;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    margin: 0 auto auto;
+}
+
 .slide-in-bottom {
     -webkit-animation: slide-in-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
     animation: slide-in-bottom 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;

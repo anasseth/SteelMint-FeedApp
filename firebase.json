@@ -4,7 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "source": ".",
+    "public": "./dist/steelmint-announcement-app",
     "ignore": [
       "firebase.json",
       "**/.*",
