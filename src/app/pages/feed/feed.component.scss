@@ -7,8 +7,8 @@
     border-radius: 50%;
     font-size: 13px;
     font-weight: 700;
-    position: absolute;
-    bottom: -31px;
+    // position: absolute;
+    // bottom: -31px;
 }
 
 .published {
@@ -57,11 +57,11 @@
     font-weight: 500;
 }
 
-.date-posted {
-    position: absolute;
-    bottom: -33px;
-    right: 0px;
-}
+// .date-posted {
+//     position: absolute;
+//     bottom: -33px;
+//     right: 0px;
+// }
 
 .bigmint-logo {
     padding: 3px;
@@ -75,6 +75,10 @@
     position: absolute;
     right: 10px;
     top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 93%;
 
     ng-icon {
         margin-left: 5px;
@@ -92,7 +96,41 @@
     border: none;
     color: #fff;
     font-weight: 700;
-    margin: 0 auto auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.date-range {
+    background-color: #373737;
+    color: white;
+    border-radius: 20px;
+    padding: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: fit-content;
+    outline: none;
+    border: none;
+    box-shadow: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.name-chip {
+    padding: 3px;
+    padding-left: 13px;
+    padding-right: 13px;
+    color: white;
+    background-color: #00000085;
+    border-radius: 20px;
+}
+
+.option-tooltip {
+    padding: 3px;
+    padding-left: 5px;
+    padding-right: 10px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5215686275);
+    border-radius: 20px;
 }
 
 .slide-in-bottom {
@@ -133,4 +171,58 @@
     width: 0px;
     height: 0px;
     padding: 0px !important;
+}
+
+::ng-deep .mat-mdc-select-value {
+    color: #74563e;
+}
+
+.notification-icon {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #ff8f00;
+    border-radius: 50%;
+    padding: 10px;
+    padding-bottom: 8px;
+    span{
+        font-size: 10px;
+        background-color: red;
+        color: white;
+        border-radius: 50%;
+        display: block;
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        top: -4px;
+        right: 0px;
+        text-align: center;
+        font-weight: 700;
+    }
+    mat-icon {
+        color: white;
+    }
+}
+
+.filter-btn-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    button {
+        margin-left: 5px;
+        megin-right: 5px;
+        background-color: #f0a81c;
+    }
+
+    .cancel {
+        background-color: #ef2229 !important;
+        color: white !important;
+    }
+
+    .clear {
+        background-color: #74563e !important;
+        color: white !important;
+    }
 }

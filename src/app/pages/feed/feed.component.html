@@ -25,31 +25,29 @@
 			<mat-spinner *ngIf="isLoadingPreviousPost" diameter="22" style="margin-right: 10px;"></mat-spinner>
 			{{ isLoadingPreviousPost ? 'Loading...' : 'Load Previous Post' }}
 		</button>
+		<button class="date-range d-flex justify-content-center" *ngIf="!isLoadingPreviousPost && !isLoadingNextPost" >
+			{{this.range.value.start | date:'mediumDate'}}&nbsp;&nbsp;-&nbsp;&nbsp;{{this.range.value.end | date:'mediumDate'}}
+		</button>
 		<div class="chat" *ngFor="let msg of messages">
-			<div class="message-status" [ngClass]="{
-					'published':msg.status == FeedStatus.PUBLISHED,
-					'accepted':msg.status == FeedStatus.ACCEPTED,
-					'submitted':msg.status == FeedStatus.SUBMITTED,
-					'rejected':msg.status == FeedStatus.REJECTED,
-					'verified':msg.status == FeedStatus.VERIFIED
-				}">
-				{{msg.status.slice(0,1)}}
-			</div>
 			<div class="msg" [ngClass]="{
 				'high':msg.priority == FeedPriority.HIGH,
 				'medium':msg.priority == FeedPriority.MEDIUM,
 				'low':msg.priority == FeedPriority.LOW,
 			}">
 				<div class="icon-toolbar">
-					<ng-icon (click)="bookmarkPost(msg)" name="heroStarSolid" size="20"
-						[color]="msg.isBookmarked ? 'yellow' : 'grey' "></ng-icon>
-					<button mat-icon-button class="hide" [matMenuTriggerFor]="feedMenu"
-						#feedMenuTrigger="matMenuTrigger">
-					</button>
-					<ng-icon name="heroEllipsisVertical" size="20" color="grey"
-						(click)="$event.stopPropagation(); feedMenuTrigger.openMenu(); selectChatMessage(msg)"></ng-icon>
+					<div class="name-chip">
+						<b>{{msg.postedBy}}</b>
+					</div>
+					<div class="option-tooltip">
+						<ng-icon (click)="bookmarkPost(msg)" name="heroStarSolid" size="17"
+							[color]="isPostBookmarked(msg) ? 'yellow' : 'white' "></ng-icon>
+						<ng-icon name="heroEllipsisVertical" size="17" color="white" [matMenuTriggerFor]="moreInfo"
+							(click)="$event.stopPropagation(); selectChatMessage(msg)"></ng-icon>
+						<ng-icon name="heroShareSolid" size="17" color="white" *ngIf="msg.isShareable"
+							(click)="$event.stopPropagation(); selectChatMessage(msg); showShareOption()"></ng-icon>
+					</div>
 				</div>
-				<p style="margin-top: 10px;" [innerHTML]="msg.messageContent"></p>
+				<p style="margin-top: 22px;" [innerHTML]="msg.messageContent"></p>
 				<div style="text-align: center;">
 					<img class="preview" *ngIf="msg.type == FeedType.IMAGE && msg.imageUrl" [src]="msg.imageUrl">
 					<img class="preview" *ngIf="msg.type == FeedType.FILE && msg.fileThumbnailImageUrl"
@@ -62,29 +60,105 @@
 					<button (click)="openURLInNewTab(msg.imageUrl)" *ngIf="msg.type == FeedType.IMAGE">View
 						Image</button>
 				</div>
+				<div class="d-flex justify-content-between align-items-center" style="margin-top: 20px;">
+					<div class="message-status" [ngClass]="{
+						'published':msg.status == FeedStatus.PUBLISHED,
+						'accepted':msg.status == FeedStatus.ACCEPTED,
+						'submitted':msg.status == FeedStatus.SUBMITTED,
+						'rejected':msg.status == FeedStatus.REJECTED,
+						'verified':msg.status == FeedStatus.VERIFIED
+					}">
+						{{msg.status.slice(0,1)}}
+					</div>
+					<div class="date-posted">
+						<b class="font-weight-600">{{globalService.convertSecondsToTimestamp(msg.postedOn) |
+							date:'short'}}</b>
+					</div>
+				</div>
 			</div>
-			<div class="date-posted">Posted by <b>{{msg.postedBy}}</b> on
-				{{globalService.convertSecondsToTimestamp(msg.postedOn) | date:'short'}}</div>
+		</div>
+		<div class="notification-icon" *ngIf="scrollAtTop" (click)="navigateToBottom()">
+			<span>1</span>
+			<mat-icon>mail</mat-icon>
+		</div>
+		<button class="load-more d-flex justify-content-center" style="position: absolute;bottom: 20px; left: 35%;" (click)="loadPreviousPost()"
+			*ngIf="this.range.controls.end.value?.toDateString() != today?.toDateString()">
+			<mat-spinner *ngIf="isLoadingPreviousPost" diameter="22" style="margin-right: 10px;"></mat-spinner>
+			{{ isLoadingNextPost ? 'Loading...' : 'Load Next Post' }}
+		</button>
+	</div>
+ 
+	<div class="policy slide-in-bottom" *ngIf="isSharePanelEnabled">
+		<div>
+			<share-buttons *ngIf="this.shareableContentType != FeedType.TEXT" [theme]="'circles-dark'"
+				[include]="['twitter','linkedin','reddit','whatsapp','copy']" [show]="7" [showText]="true"
+				[url]="shareableURL">
+			</share-buttons>
+			<share-buttons *ngIf="this.shareableContentType == FeedType.TEXT" [theme]="'circles-dark'"
+				[include]="['copy']" [show]="7" [showText]="false" [cdkCopyToClipboard]="shareableURL" [url]="''"
+				[description]="shareableURL">
+			</share-buttons>
 		</div>
 	</div>
 
-	<div class="policy slide-in-bottom" *ngIf="isSharePanelEnabled">
-		<!-- <p>
-			By using the chat, I confirm that I have read the
-			<a href="#">privacy policy</a>
-			and do not object to the use of my personal data.
-		</p>
-		<a href="#" class="agree">
-			I agree
-		</a> -->
-		<div>
-			<share-buttons *ngIf="this.shareableContentType != FeedType.TEXT" [theme]="'circles-dark'"
-				[include]="['twitter','linkedin','reddit','messenger','whatsapp','copy']" [show]="7" [showText]="true"
-				[url]="shareableURL"></share-buttons>
-			<share-buttons *ngIf="this.shareableContentType == FeedType.TEXT" [theme]="'circles-dark'"
-				[include]="['copy']" [show]="7" [showText]="true" [url]="shareableURL"
-				[description]="shareableURL"></share-buttons>
+	<div class="all-filter slide-in-bottom" *ngIf="isAllFilterPanelOpen">
+		<div class="d-flex justify-content-center" style="margin-top: 10px; align-items: baseline;">
+			<mat-slide-toggle [ngModel]="isMultipleSelectionForFilter"
+				(change)="switchFilterMode($event)"></mat-slide-toggle>
+			<p>{{isMultipleSelectionForFilter ? 'You can filter by multiple selection under one category' : 'You can filter by multiple category with single selection.'}}</p>
 		</div>
+		<form [formGroup]="filters">
+			<mat-form-field style="width: 320px;">
+				<mat-label>Commodity</mat-label>
+				<mat-select (selectionChange)="onFilterChange($event, 'commodity')" formControlName="commodity"
+					multiple="{{isMultipleSelectionForFilter}}">
+					<mat-option *ngFor="let item of this.filterService.commodityList"
+						[value]="item">{{item}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field style="width: 320px;">
+				<mat-label>Sub Commodity</mat-label>
+				<mat-select (selectionChange)="onFilterChange($event, 'subCommodity')" formControlName="subCommodity"
+					multiple="{{isMultipleSelectionForFilter}}">
+					<mat-option *ngFor="let item of this.filterService.subCommodityList"
+						[value]="item">{{item}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field style="width: 320px;">
+				<mat-label>Source Type</mat-label>
+				<mat-select (selectionChange)="onFilterChange($event, 'sourceType')" formControlName="sourceType"
+					multiple="{{isMultipleSelectionForFilter}}">
+					<mat-option *ngFor="let item of this.filterService.sourceTypeList"
+						[value]="item">{{item}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field style="width: 320px;">
+				<mat-label>Region/Country</mat-label>
+				<mat-select (selectionChange)="onFilterChange($event, 'region')" formControlName="region"
+					multiple="{{isMultipleSelectionForFilter}}">
+					<mat-option *ngFor="let item of this.filterService.regionList" [value]="item">{{item}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field style="width: 320px;">
+				<mat-label>Feed Topic</mat-label>
+				<mat-select (selectionChange)="onFilterChange($event, 'feedTopic')" formControlName="feedTopic"
+					multiple="{{isMultipleSelectionForFilter}}">
+					<mat-option *ngFor="let item of this.filterService.feedTopicList"
+						[value]="item">{{item}}</mat-option>
+				</mat-select>
+			</mat-form-field>
+			<div class="filter-btn-container" style="width: 100%;">
+				<button mat-flat-button class="cancel" (click)="isAllFilterPanelOpen = !isAllFilterPanelOpen" style="width: 100px;">
+					Cancel
+				</button>
+				<button mat-flat-button class="clear" (click)="initializeFilterForm()" style="width: 100px;">
+					Clear
+				</button>
+				<button mat-flat-button (click)="applyAllFilter()" style="width: 100px;">
+					Filter
+				</button>
+			</div>
+		</form>
 	</div>
 </div>
 
@@ -104,13 +178,19 @@
 	<button mat-menu-item>
 		<span>My Trade</span>
 	</button>
+	<button mat-menu-item (click)="addData()">
+		<span>Add New Document</span>
+	</button>
+	<button mat-menu-item (click)="isScrollNotAtBottom()">
+		Check Scroll Position
+	</button>
 </mat-menu>
 
 <mat-menu #filterMenu="matMenu">
 	<button mat-menu-item style="padding-left: 5px;">
 		<mat-form-field>
 			<mat-label>Enter a date range</mat-label>
-			<mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+			<mat-date-range-input [formGroup]="range" [rangePicker]="picker" [max]="today">
 				<input matStartDate formControlName="start" placeholder="Start date">
 				<input matEndDate formControlName="end" placeholder="End date">
 			</mat-date-range-input>
@@ -120,33 +200,29 @@
 			<mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
 		</mat-form-field>
 	</button>
-</mat-menu>
-
-<mat-menu #categoryMenu="matMenu">
-	<button mat-menu-item>
-		<span>Submit Feed</span>
-	</button>
-	<button mat-menu-item>
-		<span>My Feeds</span>
-	</button>
-	<button mat-menu-item>
-		<span>Score Card</span>
-	</button>
-	<button mat-menu-item>
-		<span>Terms & Condition</span>
-	</button>
-	<button mat-menu-item>
-		<span>My Trade</span>
-	</button>
-</mat-menu>
-
-<mat-menu #feedMenu="matMenu">
-	<button mat-menu-item>
+	<button mat-menu-item (click)="isAllFilterPanelOpen = !isAllFilterPanelOpen">
 		<mat-icon>info</mat-icon>
-		<span>More Information</span>
+		<span>All Filters</span>
 	</button>
-	<button *ngIf="selectedChatMessage?.isShareable" mat-menu-item (click)="showShareOption()">
-		<mat-icon>share</mat-icon>
-		<span>Share this feed</span>
+</mat-menu>
+
+<mat-menu #moreInfo="matMenu">
+	<button mat-menu-item *ngIf="selectedChatMessage">
+		<span><b>Topic</b> : {{selectedChatMessage.feedTopic}}</span>
+	</button>
+	<button mat-menu-item *ngIf="selectedChatMessage">
+		<span><b>Type</b> : {{selectedChatMessage.type}}</span>
+	</button>
+	<button mat-menu-item *ngIf="selectedChatMessage">
+		<span><b>Source</b> : {{selectedChatMessage.sourceType}}</span>
+	</button>
+	<button mat-menu-item *ngIf="selectedChatMessage">
+		<span><b>Commodity</b> : {{selectedChatMessage.commodity}}</span>
+	</button>
+	<button mat-menu-item *ngIf="selectedChatMessage">
+		<span><b>Sub Commodity</b> : {{selectedChatMessage.subCommodity}}</span>
+	</button>
+	<button mat-menu-item *ngIf="selectedChatMessage">
+		<span><b>Region</b> : {{selectedChatMessage.region}}</span>
 	</button>
 </mat-menu>

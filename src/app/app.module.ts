@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { NgIconsModule } from '@ng-icons/core';
 import { heroEllipsisVertical, heroStar } from '@ng-icons/heroicons/outline';
-import { heroEllipsisVerticalSolid, heroStarSolid, heroFunnelSolid } from '@ng-icons/heroicons/solid';
+import { heroEllipsisVerticalSolid, heroStarSolid, heroFunnelSolid, heroShareSolid } from '@ng-icons/heroicons/solid';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -25,6 +25,9 @@ import { ShareButtonsModule } from 'ngx-sharebuttons/buttons';
 import { ShareIconsModule } from 'ngx-sharebuttons/icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgIconsModule.withIcons({ heroEllipsisVertical, heroStar, heroStarSolid, heroFunnelSolid }),
+    NgIconsModule.withIcons({ heroEllipsisVertical, heroStar, heroStarSolid, heroFunnelSolid, heroShareSolid }),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     BrowserAnimationsModule,
@@ -52,7 +55,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ShareButtonsModule,
     ShareIconsModule,
     FontAwesomeModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    ClipboardModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

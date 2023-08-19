@@ -14,6 +14,11 @@ export interface Message {
     articleUrl?: string;
     isShareable?: boolean;
     isBookmarked?: boolean;
-    source?: string;
+    sourceType?: string;
     feedType?: string;
+    commodity?: string;
+    subCommodity?: string;
+    feedTopic?: string;
+    region?: string;
+    bookmarkTracking?: string[];
 }

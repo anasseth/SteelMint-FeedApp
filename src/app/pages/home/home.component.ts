@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   trigger,
   animate,
@@ -13,33 +13,23 @@ import {
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  animations: [
-    trigger('routerTransition', [
-      transition('* <=> *', [
-        query(':enter, :leave', style({ position: 'fixed', width: '100%' })),
-        group([
-          query(':enter', [
-            style({ transform: 'translateX(100%)' }),
-            animate('0.5s ease-in-out', style({ transform: 'translateX(0%)' })),
-          ]),
-          query(':leave', [
-            style({ transform: 'translateX(0%)' }),
-            animate(
-              '0.5s ease-in-out',
-              style({ transform: 'translateX(-100%)' })
-            ),
-          ]),
-        ]),
-      ]),
-    ]),
-  ],
 })
 export class HomeComponent implements OnInit {
-  constructor(public router: Router) {}
+
+  userId!: string;
+
+  constructor(public router: Router, public ActivatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.ActivatedRoute.queryParams.subscribe(
+      (param) => {
+        if (param.userId) {
+          this.userId = param.userId;
+        }
+      }
+    )
     setTimeout(() => {
-      this.router.navigate(['/feed']);
+      this.router.navigate(['/feed'], { queryParams: { userId: this.userId } });
     }, 3000);
   }
 }
