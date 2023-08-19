@@ -95,7 +95,7 @@
 				[url]="shareableURL">
 			</share-buttons>
 			<share-buttons *ngIf="this.shareableContentType == FeedType.TEXT" [theme]="'circles-dark'"
-				[include]="['copy']" [show]="7" [showText]="false" [cdkCopyToClipboard]="shareableURL" [url]="''"
+				[include]="['copy']" [show]="7" [showText]="true" [cdkCopyToClipboard]="shareableURL" [url]="''"
 				[description]="shareableURL">
 			</share-buttons>
 		</div>
@@ -180,9 +180,6 @@
 	</button>
 	<button mat-menu-item (click)="addData()">
 		<span>Add New Document</span>
-	</button>
-	<button mat-menu-item (click)="isScrollNotAtBottom()">
-		Check Scroll Position
 	</button>
 </mat-menu>
 

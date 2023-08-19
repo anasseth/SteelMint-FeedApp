@@ -47,6 +47,7 @@ export class FeedComponent implements OnInit {
   constructor(public globalService: GlobalService, public filterService: FiltersService, private ActivatedRoute: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
+    this.globalService.showSpinner();
     this.ActivatedRoute.queryParams.subscribe(
       (param) => {
         if (param.userId) {
@@ -58,7 +59,7 @@ export class FeedComponent implements OnInit {
     var dateYesterday = new Date();
     this.filterService.validateAndLoadFiltersData();
     this.range.controls.end.setValue(date);
-    dateYesterday.setDate(dateYesterday.getDate() - 18);
+    dateYesterday.setDate(dateYesterday.getDate() - 6);
     this.range.controls.start.setValue(dateYesterday);
     this.initializeFilterForm();
     this.loadData();
@@ -83,12 +84,12 @@ export class FeedComponent implements OnInit {
 
   isScrollNotAtBottom(): void {
     const container = this.chatBoxContainer.nativeElement;
-    if(container.scrollTop + container.clientHeight < container.scrollHeight - 200){
+    if (container.scrollTop + container.clientHeight < container.scrollHeight - 200) {
       this.scrollAtTop = true;
     }
   }
 
-  navigateToBottom(){
+  navigateToBottom() {
     this.scrollAtTop = false;
     this.initializeFilterForm();
     this.closeActiveConnection();
@@ -125,7 +126,7 @@ export class FeedComponent implements OnInit {
     this.range.controls.end.setValue(nextDate);
   }
 
-  async loadData(endDate?: any, forceScroll?:boolean) {
+  async loadData(endDate?: any, forceScroll?: boolean) {
     const itemCollection = collection(this.firestore, 'Feeds-Data');
     const q = query(itemCollection, ...this.generateDynamicQuery(endDate));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -142,6 +143,7 @@ export class FeedComponent implements OnInit {
       }
       this.isLoadingPreviousPost = false;
       ++this.count;
+      this.globalService.hideSpinner();
     });
     this.unsubscribeFeed = unsubscribe;
   }
@@ -200,7 +202,7 @@ export class FeedComponent implements OnInit {
         break;
       default:
         this.shareableContentType = FeedType.TEXT;
-        this.shareableURL = object.messageContent ? object.messageContent : ''
+        this.shareableURL = object.messageContent ? this.removeTags(object.messageContent) : ''
         break;
     }
   }
@@ -215,6 +217,7 @@ export class FeedComponent implements OnInit {
   }
 
   applyAllFilter() {
+    this.globalService.showSpinner();
     this.isAllFilterPanelOpen = false;
     this.closeActiveConnection();
     this.loadData();
@@ -282,7 +285,7 @@ export class FeedComponent implements OnInit {
       region: 'USA',
     }
     addDoc(dbRef, data)
-      .then(docRef => {})
+      .then(docRef => { })
       .catch(error => {
         console.log(error);
       })
@@ -311,18 +314,18 @@ export class FeedComponent implements OnInit {
         };
       }
       updateDoc(docRef, data)
-        .then(docRef => {})
+        .then(docRef => { })
         .catch(error => {
           console.log(error);
         })
     }
   }
 
-  public get startDate() {
-    return this.range.controls.start.value;
-  }
-
-  public get endDate() {
-    return this.range.controls.end.value;
+  removeTags(str: string) {
+    if ((str === null) || (str === ''))
+      return '';
+    else
+      str = str.toString();
+    return str.replace(/(<([^>]+)>)/ig, '');
   }
 }
