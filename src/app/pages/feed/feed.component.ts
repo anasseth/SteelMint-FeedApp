@@ -100,7 +100,6 @@ export class FeedComponent implements OnInit {
     const q = query(itemCollection, where("postedOn", "<=", new Date()), where("postedOn", ">=", this.range.value.start))
     const unsubscribe = onSnapshot(itemCollection, (querySnapshot) => {
       const collectionCount = querySnapshot.size;
-      console.log("Collection Count : ", collectionCount)
       this.count++;
       if (this.unsubscribeFeed) {
         this.unsubscribeFeed();
@@ -143,7 +142,6 @@ export class FeedComponent implements OnInit {
       }
       this.isLoadingPreviousPost = false;
       ++this.count;
-      console.log("Messages : ", this.messages)
     });
     this.unsubscribeFeed = unsubscribe;
   }
@@ -284,9 +282,7 @@ export class FeedComponent implements OnInit {
       region: 'USA',
     }
     addDoc(dbRef, data)
-      .then(docRef => {
-        console.log("Document has been added successfully");
-      })
+      .then(docRef => {})
       .catch(error => {
         console.log(error);
       })
@@ -315,9 +311,7 @@ export class FeedComponent implements OnInit {
         };
       }
       updateDoc(docRef, data)
-        .then(docRef => {
-          console.log("Message Bookmarked !");
-        })
+        .then(docRef => {})
         .catch(error => {
           console.log(error);
         })
