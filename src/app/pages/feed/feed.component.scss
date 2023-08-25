@@ -5,8 +5,9 @@
     width: 25px;
     height: 25px;
     border-radius: 50%;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
+    border: 1px solid black;
     // position: absolute;
     // bottom: -31px;
 }
@@ -179,7 +180,7 @@
 
 .notification-icon {
     position: absolute;
-    bottom: 20px;
+    bottom: 60px;
     right: 20px;
     background-color: #ff8f00;
     border-radius: 50%;
