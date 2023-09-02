@@ -129,7 +129,7 @@
 			</mat-form-field>
 			<mat-form-field style="width: 320px;">
 				<mat-label>Source Type</mat-label>
-				<mat-select (selectionChange)="onFilterChange($event, 'source')" formControlName="source"
+				<mat-select (selectionChange)="onFilterChange($event, 'sourceType')" formControlName="sourceType"
 					multiple="{{isMultipleSelectionForFilter}}">
 					<mat-option *ngFor="let item of this.filterService.sourceTypeList"
 						[value]="item">{{item}}</mat-option>
@@ -229,7 +229,7 @@
 		<span><b>Topic</b> : {{selectedChatMessage.feedTopic}}</span>
 	</button>
 	<button mat-menu-item *ngIf="selectedChatMessage">
-		<span><b>Source</b> : {{selectedChatMessage.source}}</span>
+		<span><b>Source</b> : {{selectedChatMessage.sourceType}}<span *ngIf="selectedChatMessage && selectedChatMessage.sourceValue"> ( {{selectedChatMessage.sourceValue}} ) </span></span>
 	</button>
 	<button mat-menu-item *ngIf="selectedChatMessage">
 		<span><b>Commodity</b> : {{selectedChatMessage.commodity}}</span>

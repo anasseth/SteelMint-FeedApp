@@ -181,7 +181,6 @@ export class FeedComponent implements OnInit {
       }
       this.isLoadingPreviousPost = false;
       ++this.count;
-      console.log('Messages : ', this.messages);
       this.globalService.hideSpinner();
     });
     this.unsubscribeFeed = unsubscribe;
@@ -288,7 +287,7 @@ export class FeedComponent implements OnInit {
       this.filters = new FormGroup({
         commodity: new FormControl([]),
         subCommodity: new FormControl([]),
-        source: new FormControl([]),
+        sourceType: new FormControl([]),
         region: new FormControl([]),
         feedTopic: new FormControl([]),
       });
@@ -296,7 +295,7 @@ export class FeedComponent implements OnInit {
       this.filters = new FormGroup({
         commodity: new FormControl(null),
         subCommodity: new FormControl(null),
-        source: new FormControl(null),
+        sourceType: new FormControl(null),
         region: new FormControl(null),
         feedTopic: new FormControl(null),
       });
@@ -318,7 +317,6 @@ export class FeedComponent implements OnInit {
       isShareable: true,
       status: 'Published',
       priority: 'Low',
-      feedType: 'Primary',
       postedBy: 'Farhan',
       postedOn: new Date(),
       imageUrl: '',
@@ -327,7 +325,8 @@ export class FeedComponent implements OnInit {
       messageContent:
         'Question for tech enthusiasts: With AI evolving rapidly, how do you envision its impact on job roles across industries? Looking forward to insightful discussions.',
       articleUrl: 'https://www.britannica.com/science/crude-oil',
-      source: 'Primary',
+      sourceType: 'Primary',
+      sourceValue: 'DPID-12346',
       isBookmarked: true,
       fileUrl: '',
       type: 'Text',
@@ -350,7 +349,6 @@ export class FeedComponent implements OnInit {
       isShareable: true,
       status: 'Verified',
       priority: 'Medium',
-      feedType: 'Secondary',
       postedBy: 'John',
       postedOn: new Date(),
       imageUrl: '',
@@ -360,7 +358,8 @@ export class FeedComponent implements OnInit {
       messageContent:
         '<h2>Apple Stocks Decline</h2><br />Gadget giant Apple Inc. (NASDAQ: AAPL) on Thursday said its third-quarter 2023 sales declined modestly from last year. The results came in above the market’s projections.',
       articleUrl: '',
-      source: 'Secondary',
+      sourceType: 'Secondary',
+      sourceValue: 'Financial',
       isBookmarked: true,
       fileUrl:
         'https://www.apple.com/newsroom/pdfs/FY23_Q1_Consolidated_Financial_Statements.pdf',
@@ -384,7 +383,6 @@ export class FeedComponent implements OnInit {
       isShareable: true,
       status: 'Rejected',
       priority: 'High',
-      feedType: 'Primary',
       postedBy: 'Allan',
       postedOn: new Date(),
       imageUrl:
@@ -395,7 +393,8 @@ export class FeedComponent implements OnInit {
         '<h2>Why the choice of the blockchain matters for NFT collections ?</h2><br />When choosing a blockchain, consider the trade-offs and align it with your needs. Avoid risking your funds, time and community trust.',
       articleUrl:
         'https://cointelegraph.com/innovation-circle/why-the-choice-of-the-blockchain-matters-for-nft-collections',
-      source: 'Business Times',
+      sourceType: 'Secondary',
+      sourceValue: 'Business Times',
       isBookmarked: true,
       fileUrl: '',
       type: 'Image',
