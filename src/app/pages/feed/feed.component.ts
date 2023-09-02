@@ -1,5 +1,24 @@
-import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
-import { Firestore, collectionData, collection, getFirestore, doc, updateDoc, query, where, onSnapshot, limit, orderBy, addDoc } from '@angular/fire/firestore';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  Firestore,
+  collectionData,
+  collection,
+  getFirestore,
+  doc,
+  updateDoc,
+  query,
+  where,
+  onSnapshot,
+  limit,
+  orderBy,
+  addDoc,
+} from '@angular/fire/firestore';
 import { Observable, Subject } from 'rxjs';
 import { FeedStatus } from 'src/app/models/FeedStatus';
 import { FeedPriority } from 'src/app/models/FeedPriority';
@@ -13,7 +32,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-feed',
   templateUrl: './feed.component.html',
-  styleUrls: ['./feed.component.scss']
+  styleUrls: ['./feed.component.scss'],
 })
 export class FeedComponent implements OnInit {
   @ViewChild('chatbox') private chatBoxContainer!: ElementRef;
@@ -26,7 +45,7 @@ export class FeedComponent implements OnInit {
   messages: any = [];
   FeedType = FeedType;
   filters!: FormGroup;
-  today: Date = new Date;
+  today: Date = new Date();
   FeedStatus = FeedStatus;
   shareableURL: string = '';
   articleShareableURL: string = '';
@@ -35,7 +54,11 @@ export class FeedComponent implements OnInit {
   activateArticleSharing: boolean = false;
   scrollAtTop: boolean = false;
   isLoadingNextPost: boolean = false;
-  activeShareableType: FeedType.ARTICLE | FeedType.FILE | FeedType.IMAGE | FeedType.TEXT = FeedType.TEXT;
+  activeShareableType:
+    | FeedType.ARTICLE
+    | FeedType.FILE
+    | FeedType.IMAGE
+    | FeedType.TEXT = FeedType.TEXT;
   isSharePanelEnabled: boolean = false;
   isAllFilterPanelOpen: boolean = false;
   isLoadingPreviousPost: boolean = false;
@@ -45,19 +68,26 @@ export class FeedComponent implements OnInit {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  shareableContentType: FeedType.ARTICLE | FeedType.FILE | FeedType.IMAGE | FeedType.TEXT = FeedType.TEXT;
+  shareableContentType:
+    | FeedType.ARTICLE
+    | FeedType.FILE
+    | FeedType.IMAGE
+    | FeedType.TEXT = FeedType.TEXT;
 
-  constructor(public globalService: GlobalService, public filterService: FiltersService, private ActivatedRoute: ActivatedRoute, private router: Router) { }
+  constructor(
+    public globalService: GlobalService,
+    public filterService: FiltersService,
+    private ActivatedRoute: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.globalService.showSpinner();
-    this.ActivatedRoute.queryParams.subscribe(
-      (param) => {
-        if (param.userId) {
-          this.userId = param.userId;
-        }
+    this.ActivatedRoute.queryParams.subscribe((param) => {
+      if (param.userId) {
+        this.userId = param.userId;
       }
-    )
+    });
     var date = new Date();
     var dateYesterday = new Date();
     this.filterService.validateAndLoadFiltersData();
@@ -67,12 +97,10 @@ export class FeedComponent implements OnInit {
     this.initializeFilterForm();
     this.loadData();
     this.detectCollectionCountChanges();
-    this.range.controls.end.valueChanges.subscribe(
-      (res) => {
-        this.closeActiveConnection();
-        this.loadData(res);
-      }
-    )
+    this.range.controls.end.valueChanges.subscribe((res) => {
+      this.closeActiveConnection();
+      this.loadData(res);
+    });
   }
 
   scrollToElement(): void {
@@ -80,14 +108,17 @@ export class FeedComponent implements OnInit {
       this.chatBoxContainer.nativeElement.scroll({
         top: this.chatBoxContainer.nativeElement.scrollHeight,
         left: 0,
-        behavior: 'smooth'
+        behavior: 'smooth',
       });
     }, 500);
   }
 
   isScrollNotAtBottom(): void {
     const container = this.chatBoxContainer.nativeElement;
-    if (container.scrollTop + container.clientHeight < container.scrollHeight - 200) {
+    if (
+      container.scrollTop + container.clientHeight <
+      container.scrollHeight - 200
+    ) {
       this.scrollAtTop = true;
     }
   }
@@ -101,7 +132,11 @@ export class FeedComponent implements OnInit {
 
   detectCollectionCountChanges(): void {
     const itemCollection = collection(this.firestore, 'Feeds-Data');
-    const q = query(itemCollection, where("postedOn", "<=", new Date()), where("postedOn", ">=", this.range.value.start))
+    const q = query(
+      itemCollection,
+      where('postedOn', '<=', new Date()),
+      where('postedOn', '>=', this.range.value.start)
+    );
     const unsubscribe = onSnapshot(itemCollection, (querySnapshot) => {
       const collectionCount = querySnapshot.size;
       this.count++;
@@ -137,15 +172,16 @@ export class FeedComponent implements OnInit {
       querySnapshot.forEach((doc) => {
         let message = {
           id: doc.id,
-          ...doc.data()
-        }
-        this.messages.push(message)
+          ...doc.data(),
+        };
+        this.messages.push(message);
       });
       if (this.count == 0 || forceScroll) {
         this.scrollToElement();
       }
       this.isLoadingPreviousPost = false;
       ++this.count;
+      console.log('Messages : ', this.messages);
       this.globalService.hideSpinner();
     });
     this.unsubscribeFeed = unsubscribe;
@@ -153,15 +189,22 @@ export class FeedComponent implements OnInit {
 
   generateDynamicQuery(endDate?: any) {
     let filterObject: any = this.filters.value;
-    let combinedQuery: any = [where("postedOn", "<=", endDate ? endDate : this.range.controls.end.value), where("postedOn", ">=", this.range.value.start), orderBy("postedOn")];
+    let combinedQuery: any = [
+      where(
+        'postedOn',
+        '<=',
+        endDate ? endDate : this.range.controls.end.value
+      ),
+      where('postedOn', '>=', this.range.value.start),
+      orderBy('postedOn'),
+    ];
     for (const property in filterObject) {
       if (this.isMultipleSelectionForFilter) {
         if (filterObject[property].length > 0) {
           let query = where(property, 'in', filterObject[property]);
           combinedQuery.push(query);
         }
-      }
-      else {
+      } else {
         if (filterObject[property]) {
           let query = where(property, '==', filterObject[property]);
           combinedQuery.push(query);
@@ -187,14 +230,15 @@ export class FeedComponent implements OnInit {
   showShareOption(shareType: string): void {
     this.isSharePanelEnabled = true;
     this.activateArticleSharing = false;
-    if(shareType == 'article'){
+    if (shareType == 'article') {
       this.activateArticleSharing = true;
     }
   }
 
   selectChatMessage(object: Message, articleShare?: boolean) {
     this.selectedChatMessage = object;
-    if (articleShare) this.articleShareableURL = object.articleUrl ? object.articleUrl : '';
+    if (articleShare)
+      this.articleShareableURL = object.articleUrl ? object.articleUrl : '';
     switch (object.type) {
       case FeedType.ARTICLE:
         this.shareableContentType = FeedType.ARTICLE;
@@ -202,15 +246,17 @@ export class FeedComponent implements OnInit {
         break;
       case FeedType.FILE:
         this.shareableContentType = FeedType.FILE;
-        this.shareableURL = object.fileUrl ? object.fileUrl : ''
+        this.shareableURL = object.fileUrl ? object.fileUrl : '';
         break;
       case FeedType.IMAGE:
         this.shareableContentType = FeedType.IMAGE;
-        this.shareableURL = object.imageUrl ? object.imageUrl : ''
+        this.shareableURL = object.imageUrl ? object.imageUrl : '';
         break;
       default:
         this.shareableContentType = FeedType.TEXT;
-        this.shareableURL = object.messageContent ? this.removeTags(object.messageContent) : ''
+        this.shareableURL = object.messageContent
+          ? this.removeTags(object.messageContent)
+          : '';
         break;
     }
   }
@@ -218,7 +264,7 @@ export class FeedComponent implements OnInit {
   switchFilterMode(event: any) {
     this.isAllFilterPanelOpen = false;
     setTimeout(() => {
-      this.isMultipleSelectionForFilter = !this.isMultipleSelectionForFilter
+      this.isMultipleSelectionForFilter = !this.isMultipleSelectionForFilter;
       this.initializeFilterForm();
       this.isAllFilterPanelOpen = true;
     }, 200);
@@ -242,162 +288,165 @@ export class FeedComponent implements OnInit {
       this.filters = new FormGroup({
         commodity: new FormControl([]),
         subCommodity: new FormControl([]),
-        sourceType: new FormControl([]),
+        source: new FormControl([]),
         region: new FormControl([]),
         feedTopic: new FormControl([]),
-      })
-    }
-    else {
+      });
+    } else {
       this.filters = new FormGroup({
         commodity: new FormControl(null),
         subCommodity: new FormControl(null),
-        sourceType: new FormControl(null),
+        source: new FormControl(null),
         region: new FormControl(null),
         feedTopic: new FormControl(null),
-      })
+      });
     }
   }
 
   openURLInNewTab(url: string) {
     if (url) {
-      window.open(url, "_blank");
-    }
-    else {
-      console.log("Resource URL Missing !")
+      window.open(url, '_blank');
+    } else {
+      console.log('Resource URL Missing !');
     }
   }
 
   addData(): void {
     const db = getFirestore();
-    const dbRef = collection(db, "Feeds-Data");
+    const dbRef = collection(db, 'Feeds-Data');
     let data = {
-      "isShareable": true,
-      "status": "Published",
-      "priority": "Low",
-      "feedType": "Primary",
-      "postedBy": "Farhan",
-      "postedOn": new Date(),
-      "imageUrl": "",
-      "bookmarkTracking": [],
-      "fileThumbnailImageUrl": "",
-      "messageContent": "Question for tech enthusiasts: With AI evolving rapidly, how do you envision its impact on job roles across industries? Looking forward to insightful discussions.",
-      "articleUrl": "https://www.britannica.com/science/crude-oil",
-      "sourceType": "Primary",
-      "isBookmarked": true,
-      "fileUrl": "",
-      "category": "Artificial Intelligence",
-      "type": "Text",
+      isShareable: true,
+      status: 'Published',
+      priority: 'Low',
+      feedType: 'Primary',
+      postedBy: 'Farhan',
+      postedOn: new Date(),
+      imageUrl: '',
+      bookmarkTracking: [],
+      fileThumbnailImageUrl: '',
+      messageContent:
+        'Question for tech enthusiasts: With AI evolving rapidly, how do you envision its impact on job roles across industries? Looking forward to insightful discussions.',
+      articleUrl: 'https://www.britannica.com/science/crude-oil',
+      source: 'Primary',
+      isBookmarked: true,
+      fileUrl: '',
+      type: 'Text',
       commodity: 'Commodity 1',
       subCommodity: 'Sub Commodity 2',
       feedTopic: 'Technology',
       region: 'USA',
-    }
+    };
     addDoc(dbRef, data)
-      .then(docRef => { })
-      .catch(error => {
+      .then((docRef) => {})
+      .catch((error) => {
         console.log(error);
-      })
+      });
   }
 
   addDataFile(): void {
     const db = getFirestore();
-    const dbRef = collection(db, "Feeds-Data");
+    const dbRef = collection(db, 'Feeds-Data');
     let data = {
-      "isShareable": true,
-      "status": "Verified",
-      "priority": "Medium",
-      "feedType": "Primary",
-      "postedBy": "John",
-      "postedOn": new Date(),
-      "imageUrl": "",
-      "bookmarkTracking": [],
-      "fileThumbnailImageUrl": "https://cdn.news.alphastreet.com/wp-content/uploads/2023/08/Apple-Q3-2023-earnings-infographic.jpg",
-      "messageContent": "<h2>Apple Stocks Decline</h2><br />Gadget giant Apple Inc. (NASDAQ: AAPL) on Thursday said its third-quarter 2023 sales declined modestly from last year. The results came in above the market’s projections.",
-      "articleUrl": "",
-      "sourceType": "Secondary",
-      "isBookmarked": true,
-      "fileUrl": "https://www.apple.com/newsroom/pdfs/FY23_Q1_Consolidated_Financial_Statements.pdf",
-      "category": "Financial",
-      "type": "File",
+      isShareable: true,
+      status: 'Verified',
+      priority: 'Medium',
+      feedType: 'Secondary',
+      postedBy: 'John',
+      postedOn: new Date(),
+      imageUrl: '',
+      bookmarkTracking: [],
+      fileThumbnailImageUrl:
+        'https://cdn.news.alphastreet.com/wp-content/uploads/2023/08/Apple-Q3-2023-earnings-infographic.jpg',
+      messageContent:
+        '<h2>Apple Stocks Decline</h2><br />Gadget giant Apple Inc. (NASDAQ: AAPL) on Thursday said its third-quarter 2023 sales declined modestly from last year. The results came in above the market’s projections.',
+      articleUrl: '',
+      source: 'Secondary',
+      isBookmarked: true,
+      fileUrl:
+        'https://www.apple.com/newsroom/pdfs/FY23_Q1_Consolidated_Financial_Statements.pdf',
+      type: 'File',
       commodity: 'Commodity 1',
       subCommodity: 'Sub Commodity 2',
       feedTopic: 'Technology',
       region: 'UK',
-    }
+    };
     addDoc(dbRef, data)
-      .then(docRef => { })
-      .catch(error => {
+      .then((docRef) => {})
+      .catch((error) => {
         console.log(error);
-      })
+      });
   }
 
   addDataImage(): void {
     const db = getFirestore();
-    const dbRef = collection(db, "Feeds-Data");
+    const dbRef = collection(db, 'Feeds-Data');
     let data = {
-      "isShareable": true,
-      "status": "Rejected",
-      "priority": "High",
-      "feedType": "Primary",
-      "postedBy": "Allan",
-      "postedOn": new Date(),
-      "imageUrl": "https://images.cointelegraph.com/images/717_aHR0cHM6Ly9zMy5jb2ludGVsZWdyYXBoLmNvbS91cGxvYWRzLzIwMjMtMDgvNGUxNTk0ZTYtOTNmZi00OTk2LTkxOGUtMTc4NzQ3MmY3MmI2LmpwZw==.jpg",
-      "bookmarkTracking": [],
-      "fileThumbnailImageUrl": "",
-      "messageContent": "<h2>Why the choice of the blockchain matters for NFT collections ?</h2><br />When choosing a blockchain, consider the trade-offs and align it with your needs. Avoid risking your funds, time and community trust.",
-      "articleUrl": "https://cointelegraph.com/innovation-circle/why-the-choice-of-the-blockchain-matters-for-nft-collections",
-      "sourceType": "Primary",
-      "isBookmarked": true,
-      "fileUrl": "",
-      "category": "Artificial Intelligence",
-      "type": "Image",
+      isShareable: true,
+      status: 'Rejected',
+      priority: 'High',
+      feedType: 'Primary',
+      postedBy: 'Allan',
+      postedOn: new Date(),
+      imageUrl:
+        'https://images.cointelegraph.com/images/717_aHR0cHM6Ly9zMy5jb2ludGVsZWdyYXBoLmNvbS91cGxvYWRzLzIwMjMtMDgvNGUxNTk0ZTYtOTNmZi00OTk2LTkxOGUtMTc4NzQ3MmY3MmI2LmpwZw==.jpg',
+      bookmarkTracking: [],
+      fileThumbnailImageUrl: '',
+      messageContent:
+        '<h2>Why the choice of the blockchain matters for NFT collections ?</h2><br />When choosing a blockchain, consider the trade-offs and align it with your needs. Avoid risking your funds, time and community trust.',
+      articleUrl:
+        'https://cointelegraph.com/innovation-circle/why-the-choice-of-the-blockchain-matters-for-nft-collections',
+      source: 'Business Times',
+      isBookmarked: true,
+      fileUrl: '',
+      type: 'Image',
       commodity: 'Commodity 1',
       subCommodity: 'Sub Commodity 2',
       feedTopic: 'Technology',
       region: 'India',
-    }
+    };
     addDoc(dbRef, data)
-      .then(docRef => { })
-      .catch(error => {
+      .then((docRef) => {})
+      .catch((error) => {
         console.log(error);
-      })
+      });
   }
 
   isPostBookmarked(message: Message): boolean {
     if (this.userId) {
-      return message.bookmarkTracking?.find((x: string) => x == this.userId) ? true : false;
+      return message.bookmarkTracking?.find((x: string) => x == this.userId)
+        ? true
+        : false;
     }
     return false;
   }
 
   bookmarkPost(message: Message): void {
     const db = getFirestore();
-    const docRef = doc(db, "Feeds-Data", message.id);
+    const docRef = doc(db, 'Feeds-Data', message.id);
     let data;
     if (this.userId) {
       if (message.bookmarkTracking?.find((x: string) => x == this.userId)) {
         data = {
-          bookmarkTracking: message.bookmarkTracking.filter((x: string) => x != this.userId),
+          bookmarkTracking: message.bookmarkTracking.filter(
+            (x: string) => x != this.userId
+          ),
         };
-      }
-      else {
+      } else {
         data = {
           bookmarkTracking: [this.userId, ...message.bookmarkTracking!],
         };
       }
       updateDoc(docRef, data)
-        .then(docRef => { })
-        .catch(error => {
+        .then((docRef) => {})
+        .catch((error) => {
           console.log(error);
-        })
+        });
     }
   }
 
   removeTags(str: string): string {
-    if ((str === null) || (str === ''))
-      return '';
-    else
-      str = str.toString();
-    return str.replace(/(<([^>]+)>)/ig, '');
+    if (str === null || str === '') return '';
+    else str = str.toString();
+    return str.replace(/(<([^>]+)>)/gi, '');
   }
 }

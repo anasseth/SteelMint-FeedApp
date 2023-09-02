@@ -1,6 +1,5 @@
 export interface Message {
     id: string;
-    category?: string;
     postedBy?: string;
     postedOn?: string;
     backgroundColor?: string;
@@ -14,7 +13,7 @@ export interface Message {
     articleUrl?: string;
     isShareable?: boolean;
     isBookmarked?: boolean;
-    sourceType?: string;
+    source?: string;
     feedType?: string;
     commodity?: string;
     subCommodity?: string;

@@ -11,7 +11,7 @@
 				</p>
 			</div>
 		</div>
-		<div>
+		<div class="d-flex">
 			<button mat-icon-button [matMenuTriggerFor]="filterMenu">
 				<mat-icon>filter_alt</mat-icon>
 			</button>
@@ -74,7 +74,7 @@
 						{{msg.status.slice(0,1)}}
 					</div>
 					<div class="date-posted">
-						<b class="font-weight-600">{{globalService.convertSecondsToTimestamp(msg.postedOn) |
+						<b class="font-weight-600">{{globalService.convertSecondsToTimestamp(msg.postedOn.seconds) |
 							date:'short'}}</b>
 					</div>
 				</div>
@@ -129,7 +129,7 @@
 			</mat-form-field>
 			<mat-form-field style="width: 320px;">
 				<mat-label>Source Type</mat-label>
-				<mat-select (selectionChange)="onFilterChange($event, 'sourceType')" formControlName="sourceType"
+				<mat-select (selectionChange)="onFilterChange($event, 'source')" formControlName="source"
 					multiple="{{isMultipleSelectionForFilter}}">
 					<mat-option *ngFor="let item of this.filterService.sourceTypeList"
 						[value]="item">{{item}}</mat-option>
@@ -229,10 +229,7 @@
 		<span><b>Topic</b> : {{selectedChatMessage.feedTopic}}</span>
 	</button>
 	<button mat-menu-item *ngIf="selectedChatMessage">
-		<span><b>Type</b> : {{selectedChatMessage.type}}</span>
-	</button>
-	<button mat-menu-item *ngIf="selectedChatMessage">
-		<span><b>Source</b> : {{selectedChatMessage.sourceType}}</span>
+		<span><b>Source</b> : {{selectedChatMessage.source}}</span>
 	</button>
 	<button mat-menu-item *ngIf="selectedChatMessage">
 		<span><b>Commodity</b> : {{selectedChatMessage.commodity}}</span>
